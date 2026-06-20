@@ -1,0 +1,2845 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>📊 إدارة المستخدمين والإشعارات - ختمتي</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js">
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js">
+    </script>
+    <style>
+        /* ===== جميع الأنماط المحسّنة ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Cairo', 'Segoe UI', 'Tahoma', sans-serif;
+            background: #f0f2f5;
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            transition: background 0.3s ease;
+        }
+
+        body.dark-mode {
+            background: #1a1a2e;
+        }
+
+        .app-container {
+            max-width: 1300px;
+            width: 100%;
+            background: #ffffff;
+            border-radius: 30px;
+            padding: 30px 25px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.10);
+            margin-top: 20px;
+            transition: all 0.3s ease;
+        }
+
+        body.dark-mode .app-container {
+            background: #16213e;
+            color: #e2e8f0;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 25px;
+            border-bottom: 2px solid #e9ecef;
+            padding-bottom: 18px;
+        }
+
+        body.dark-mode .header {
+            border-bottom-color: #2d3748;
+        }
+
+        .header h1 {
+            color: #1a4739;
+            font-size: 28px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-family: 'Cairo', sans-serif;
+        }
+
+        body.dark-mode .header h1 {
+            color: #68d391;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 30px;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: #e9ecef;
+            color: #1a1a1a;
+            text-decoration: none;
+            position: relative;
+            overflow: hidden;
+            font-family: 'Cairo', sans-serif;
+        }
+
+        .btn:active {
+            transform: scale(0.95);
+        }
+
+        .btn::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            transition: all 0.5s ease;
+        }
+
+        .btn:active::after {
+            width: 300px;
+            height: 300px;
+            top: -100px;
+            left: -100px;
+        }
+
+        body.dark-mode .btn {
+            background: #2d3748;
+            color: #e2e8f0;
+        }
+
+        .btn-primary {
+            background: #1a4739;
+            color: white;
+        }
+        .btn-primary:hover {
+            background: #0f2c24;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(26, 71, 57, 0.3);
+        }
+
+        body.dark-mode .btn-primary {
+            background: #2d7a5a;
+        }
+        body.dark-mode .btn-primary:hover {
+            background: #1a4739;
+        }
+
+        .btn-whatsapp {
+            background: #25D366;
+            color: white;
+        }
+        .btn-whatsapp:hover {
+            background: #1ebe5c;
+            transform: translateY(-2px);
+        }
+
+        .btn-telegram {
+            background: #0088cc;
+            color: white;
+        }
+        .btn-telegram:hover {
+            background: #0077b3;
+            transform: translateY(-2px);
+        }
+
+        .btn-danger {
+            background: #ef4444;
+            color: white;
+        }
+        .btn-danger:hover {
+            background: #dc2626;
+            transform: translateY(-2px);
+        }
+
+        .btn-warning {
+            background: #f59e0b;
+            color: white;
+        }
+        .btn-warning:hover {
+            background: #d97706;
+            transform: translateY(-2px);
+        }
+
+        .btn-image {
+            background: #8b5cf6;
+            color: white;
+        }
+        .btn-image:hover {
+            background: #7c3aed;
+            transform: translateY(-2px);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 2px solid #1a4739;
+            color: #1a4739;
+        }
+        .btn-outline:hover {
+            background: #1a4739;
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        body.dark-mode .btn-outline {
+            border-color: #68d391;
+            color: #68d391;
+        }
+        body.dark-mode .btn-outline:hover {
+            background: #68d391;
+            color: #1a1a2e;
+        }
+
+        .btn-success {
+            background: #22c55e;
+            color: white;
+        }
+        .btn-success:hover {
+            background: #16a34a;
+            transform: translateY(-2px);
+        }
+
+        .btn-excel {
+            background: #1e7e34;
+            color: white;
+        }
+        .btn-excel:hover {
+            background: #166b2a;
+            transform: translateY(-2px);
+        }
+
+        .btn-sm {
+            padding: 6px 14px;
+            font-size: 12px;
+        }
+
+        .btn-dark-mode {
+            background: #1a202c;
+            color: #e2e8f0;
+        }
+        .btn-dark-mode:hover {
+            background: #2d3748;
+            transform: translateY(-2px);
+        }
+
+        body.dark-mode .btn-dark-mode {
+            background: #e2e8f0;
+            color: #1a202c;
+        }
+        body.dark-mode .btn-dark-mode:hover {
+            background: #ffffff;
+        }
+
+        .controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 20px;
+            background: #f8fafc;
+            padding: 15px 18px;
+            border-radius: 20px;
+            align-items: center;
+            transition: all 0.3s ease;
+            font-family: 'Cairo', sans-serif;
+        }
+
+        body.dark-mode .controls {
+            background: #1e2a3a;
+        }
+
+        .controls label {
+            font-weight: 600;
+            color: #1a4739;
+            font-size: 14px;
+            font-family: 'Cairo', sans-serif;
+        }
+
+        body.dark-mode .controls label {
+            color: #68d391;
+        }
+
+        .controls select,
+        .controls input {
+            padding: 10px 15px;
+            border-radius: 25px;
+            border: 1px solid #d1d5db;
+            background: white;
+            font-size: 14px;
+            flex: 1;
+            min-width: 150px;
+            transition: all 0.3s ease;
+            font-family: 'Cairo', sans-serif;
+        }
+
+        body.dark-mode .controls select,
+        body.dark-mode .controls input {
+            background: #2d3748;
+            border-color: #4a5568;
+            color: #e2e8f0;
+        }
+
+        .controls select:focus,
+        .controls input:focus {
+            outline: 2px solid #1a4739;
+            border-color: transparent;
+        }
+
+        body.dark-mode .controls select:focus,
+        body.dark-mode .controls input:focus {
+            outline-color: #68d391;
+        }
+
+        .auth-status {
+            padding: 12px 18px;
+            border-radius: 15px;
+            margin-bottom: 15px;
+            font-size: 14px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            background: #f1f5f9;
+            transition: all 0.3s ease;
+            font-family: 'Cairo', sans-serif;
+        }
+
+        body.dark-mode .auth-status {
+            background: #1e2a3a;
+            color: #e2e8f0;
+        }
+
+        .auth-status.success {
+            background: #dcfce7;
+            color: #166534;
+        }
+        .auth-status.error {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+        .auth-status .spinner {
+            display: inline-block;
+            width: 18px;
+            height: 18px;
+            border: 3px solid #e9ecef;
+            border-top: 3px solid #1a4739;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        body.dark-mode .auth-status .spinner {
+            border-color: #2d3748;
+            border-top-color: #68d391;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .stats-banner {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            background: linear-gradient(135deg, #1a4739, #0f2c24);
+            color: white;
+            padding: 18px 20px;
+            border-radius: 20px;
+            margin-bottom: 25px;
+            justify-content: space-around;
+            transition: all 0.3s ease;
+            font-family: 'Cairo', sans-serif;
+        }
+
+        .stats-banner .stat-item {
+            text-align: center;
+        }
+        .stats-banner .stat-item span {
+            display: block;
+            font-size: 12px;
+            opacity: 0.8;
+        }
+        .stats-banner .stat-item strong {
+            font-size: 22px;
+            display: block;
+            margin-top: 4px;
+        }
+
+        .progress-container {
+            width: 100%;
+            padding: 0 10px;
+        }
+
+        .progress-container .progress-label {
+            display: flex;
+            justify-content: space-between;
+            font-size: 13px;
+            margin-bottom: 5px;
+            font-family: 'Cairo', sans-serif;
+        }
+
+        .progress-container .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .progress-container .progress-bar .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #22c55e, #fbbf24);
+            border-radius: 10px;
+            transition: width 1s ease;
+            width: 0%;
+        }
+
+        .quick-filters {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 15px;
+        }
+        .quick-filters .btn {
+            padding: 6px 16px;
+            font-size: 13px;
+            font-family: 'Cairo', sans-serif;
+        }
+        .quick-filters .btn.active-filter {
+            background: #1a4739;
+            color: white;
+            border-color: #1a4739;
+        }
+
+        body.dark-mode .quick-filters .btn.active-filter {
+            background: #68d391;
+            color: #1a1a2e;
+            border-color: #68d391;
+        }
+
+        .table-wrapper {
+            overflow-x: auto;
+            border-radius: 18px;
+            border: 1px solid #e9ecef;
+            margin-bottom: 25px;
+            transition: all 0.3s ease;
+        }
+
+        body.dark-mode .table-wrapper {
+            border-color: #2d3748;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+            min-width: 1100px;
+            font-family: 'Cairo', sans-serif;
+        }
+
+        thead {
+            background: #1a4739;
+            color: white;
+        }
+        thead th {
+            padding: 12px 8px;
+            text-align: right;
+            font-weight: 600;
+            white-space: nowrap;
+            cursor: pointer;
+            user-select: none;
+            transition: background 0.2s ease;
+            font-family: 'Cairo', sans-serif;
+            font-size: 12px;
+        }
+
+        thead th:hover {
+            background: #0f2c24;
+        }
+
+        body.dark-mode thead {
+            background: #2d7a5a;
+        }
+
+        tbody tr {
+            border-bottom: 1px solid #e9ecef;
+            transition: all 0.2s ease;
+        }
+
+        tbody tr:hover {
+            background: #f1f5f9;
+            transform: scale(1.01);
+        }
+
+        body.dark-mode tbody tr {
+            border-bottom-color: #2d3748;
+        }
+        body.dark-mode tbody tr:hover {
+            background: #1e2a3a;
+        }
+
+        tbody td {
+            padding: 10px 8px;
+            vertical-align: middle;
+            font-family: 'Cairo', sans-serif;
+            font-size: 12px;
+        }
+
+        /* تلوين الصفوف حسب الحالة */
+        tbody tr:has(.badge-notread) {
+            background-color: rgba(239, 68, 68, 0.05);
+            border-right: 3px solid #ef4444;
+        }
+
+        body.dark-mode tbody tr:has(.badge-notread) {
+            background-color: rgba(239, 68, 68, 0.15);
+        }
+
+        tbody tr:has(.badge-read) {
+            background-color: rgba(34, 197, 94, 0.05);
+            border-right: 3px solid #22c55e;
+        }
+
+        body.dark-mode tbody tr:has(.badge-read) {
+            background-color: rgba(34, 197, 94, 0.15);
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 2px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+            background: #e9ecef;
+            color: #1a1a1a;
+            font-family: 'Cairo', sans-serif;
+        }
+        .badge-female {
+            background: #fbcfe8;
+            color: #9d174d;
+        }
+        .badge-male {
+            background: #bfdbfe;
+            color: #1e40af;
+        }
+        .badge-mixed {
+            background: #ddd6fe;
+            color: #5b21b6;
+        }
+        .badge-active {
+            background: #dcfce7;
+            color: #166534;
+        }
+        .badge-inactive {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+        .badge-juz {
+            background: #1a4739;
+            color: white;
+            font-weight: 700;
+            font-size: 13px;
+            padding: 3px 12px;
+        }
+        .badge-juz-read {
+            background: #22c55e;
+            color: white;
+            font-weight: 700;
+            font-size: 13px;
+            padding: 3px 12px;
+        }
+        .badge-juz-pending {
+            background: #f59e0b;
+            color: #1a1a1a;
+            font-weight: 700;
+            font-size: 13px;
+            padding: 3px 12px;
+        }
+        .badge-read {
+            background: #22c55e;
+            color: white;
+        }
+        .badge-notread {
+            background: #ef4444;
+            color: white;
+        }
+        .badge-khatma-complete {
+            background: #8b5cf6;
+            color: white;
+        }
+        .badge-khatma-pending {
+            background: #f59e0b;
+            color: #1a1a1a;
+        }
+
+        .parts-list-cell {
+            font-size: 11px;
+            max-width: 180px;
+            word-wrap: break-word;
+            direction: ltr;
+            text-align: left;
+            color: #4b5563;
+        }
+
+        body.dark-mode .parts-list-cell {
+            color: #a0aec0;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: #6c757d;
+            font-family: 'Cairo', sans-serif;
+        }
+        .empty-state .icon {
+            font-size: 60px;
+            margin-bottom: 15px;
+            display: block;
+        }
+
+        /* ====== معاينة الجدول الاحترافية ====== */
+        .preview-wrapper {
+            display: none;
+            background: #ffffff;
+            border-radius: 20px;
+            padding: 25px 20px;
+            margin-bottom: 25px;
+            border: 2px solid #1a4739;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+            overflow-x: auto;
+            direction: rtl;
+            transition: all 0.3s ease;
+            font-family: 'Cairo', sans-serif;
+        }
+
+        body.dark-mode .preview-wrapper {
+            background: #16213e;
+            border-color: #68d391;
+        }
+
+        .preview-wrapper.show {
+            display: block;
+        }
+
+        .preview-wrapper .preview-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 15px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #e9ecef;
+        }
+
+        body.dark-mode .preview-wrapper .preview-header {
+            border-bottom-color: #2d3748;
+        }
+
+        .preview-wrapper .preview-header h2 {
+            color: #1a4739;
+            font-size: 22px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-family: 'Cairo', sans-serif;
+        }
+
+        body.dark-mode .preview-wrapper .preview-header h2 {
+            color: #68d391;
+        }
+
+        .preview-wrapper .preview-header .preview-date {
+            color: #6c757d;
+            font-size: 14px;
+            font-family: 'Cairo', sans-serif;
+        }
+
+        body.dark-mode .preview-wrapper .preview-header .preview-date {
+            color: #a0aec0;
+        }
+
+        .preview-wrapper table {
+            min-width: 900px;
+            font-size: 12px;
+            font-family: 'Cairo', sans-serif;
+        }
+
+        .preview-wrapper thead {
+            background: #1a4739;
+            color: white;
+        }
+
+        .preview-wrapper thead th {
+            padding: 10px 6px;
+            text-align: center;
+            font-weight: 600;
+            white-space: nowrap;
+            font-family: 'Cairo', sans-serif;
+            font-size: 11px;
+        }
+
+        .preview-wrapper tbody td {
+            padding: 8px 6px;
+            text-align: center;
+            border-bottom: 1px solid #e9ecef;
+            font-family: 'Cairo', sans-serif;
+            font-size: 11px;
+        }
+
+        body.dark-mode .preview-wrapper tbody td {
+            border-bottom-color: #2d3748;
+        }
+
+        .preview-wrapper tbody tr:hover {
+            background: #f8fafc;
+        }
+
+        body.dark-mode .preview-wrapper tbody tr:hover {
+            background: #1e2a3a;
+        }
+
+        .preview-wrapper .preview-stats {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 2px solid #e9ecef;
+            justify-content: center;
+        }
+
+        body.dark-mode .preview-wrapper .preview-stats {
+            border-top-color: #2d3748;
+        }
+
+        .preview-wrapper .preview-stats .stat {
+            text-align: center;
+            padding: 6px 16px;
+            background: #f1f5f9;
+            border-radius: 12px;
+            font-family: 'Cairo', sans-serif;
+        }
+
+        body.dark-mode .preview-wrapper .preview-stats .stat {
+            background: #1e2a3a;
+        }
+
+        .preview-wrapper .preview-stats .stat span {
+            display: block;
+            font-size: 10px;
+            color: #6c757d;
+            font-family: 'Cairo', sans-serif;
+        }
+
+        body.dark-mode .preview-wrapper .preview-stats .stat span {
+            color: #a0aec0;
+        }
+
+        .preview-wrapper .preview-stats .stat strong {
+            font-size: 16px;
+            color: #1a4739;
+            font-family: 'Cairo', sans-serif;
+        }
+
+        body.dark-mode .preview-wrapper .preview-stats .stat strong {
+            color: #68d391;
+        }
+
+        .preview-wrapper .preview-footer {
+            text-align: center;
+            margin-top: 15px;
+            padding-top: 12px;
+            border-top: 1px solid #e9ecef;
+            color: #6c757d;
+            font-size: 13px;
+            font-family: 'Cairo', sans-serif;
+        }
+
+        body.dark-mode .preview-wrapper .preview-footer {
+            border-top-color: #2d3748;
+            color: #a0aec0;
+        }
+
+        .preview-wrapper .preview-actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-top: 15px;
+        }
+
+        /* ====== الإشعارات ====== */
+        .notifications-section {
+            background: #f8fafc;
+            border-radius: 20px;
+            padding: 20px;
+            margin-top: 25px;
+            border: 1px solid #e2e8f0;
+            transition: all 0.3s ease;
+            font-family: 'Cairo', sans-serif;
+        }
+
+        body.dark-mode .notifications-section {
+            background: #1e2a3a;
+            border-color: #2d3748;
+        }
+
+        .notifications-section .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .notifications-section .section-header h3 {
+            color: #1a4739;
+            font-size: 18px;
+            font-family: 'Cairo', sans-serif;
+        }
+
+        body.dark-mode .notifications-section .section-header h3 {
+            color: #68d391;
+        }
+
+        .notifications-list {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .notification-item {
+            background: white;
+            padding: 12px 16px;
+            border-radius: 15px;
+            margin-bottom: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            border-right: 4px solid #1a4739;
+            transition: all 0.2s ease;
+            font-family: 'Cairo', sans-serif;
+        }
+
+        body.dark-mode .notification-item {
+            background: #16213e;
+            border-right-color: #68d391;
+        }
+
+        .notification-item:hover {
+            transform: translateX(-5px);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .notification-item.unread {
+            background: #e8f5e9;
+            border-right-color: #fbbf24;
+        }
+
+        body.dark-mode .notification-item.unread {
+            background: #1e2a3a;
+            border-right-color: #fbbf24;
+        }
+
+        .notification-item .notif-content {
+            flex: 1;
+            min-width: 150px;
+        }
+
+        .notification-item .notif-content .title {
+            font-weight: 600;
+            color: #1a4739;
+            font-family: 'Cairo', sans-serif;
+        }
+
+        body.dark-mode .notification-item .notif-content .title {
+            color: #68d391;
+        }
+
+        .notification-item .notif-content .message {
+            font-size: 13px;
+            color: #4b5563;
+            font-family: 'Cairo', sans-serif;
+        }
+
+        body.dark-mode .notification-item .notif-content .message {
+            color: #a0aec0;
+        }
+
+        .notification-item .notif-content .date {
+            font-size: 11px;
+            color: #9ca3af;
+            font-family: 'Cairo', sans-serif;
+        }
+
+        body.dark-mode .notification-item .notif-content .date {
+            color: #718096;
+        }
+
+        .notification-item .notif-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .notification-item .notif-actions .btn {
+            padding: 4px 12px;
+            font-size: 11px;
+            font-family: 'Cairo', sans-serif;
+        }
+
+        .notification-item .notif-actions .btn-mark-read {
+            background: #3b82f6;
+            color: white;
+        }
+        .notification-item .notif-actions .btn-mark-read:hover {
+            background: #2563eb;
+        }
+
+        .notification-item .notif-actions .btn-delete-notif {
+            background: #ef4444;
+            color: white;
+        }
+        .notification-item .notif-actions .btn-delete-notif:hover {
+            background: #dc2626;
+        }
+
+        /* ====== صورة المشاركة ====== */
+        #shareImageContainer {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        #shareImageContainer.active {
+            display: flex;
+        }
+
+        .share-image-modal {
+            background: transparent;
+            border-radius: 25px;
+            max-width: 650px;
+            width: 100%;
+            position: relative;
+        }
+
+        .share-image-modal .close-btn {
+            position: absolute;
+            top: -45px;
+            left: 0;
+            background: #ef4444;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            font-size: 22px;
+            cursor: pointer;
+            z-index: 10;
+            transition: transform 0.2s ease;
+        }
+
+        .share-image-modal .close-btn:hover {
+            transform: scale(1.1);
+        }
+
+        .share-image-modal .image-actions {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        /* ====== بطاقة الصورة ====== */
+        #shareCard {
+            background: #0a1f18;
+            padding: 25px 20px;
+            border-radius: 25px;
+            color: white;
+            font-family: 'Cairo', 'Segoe UI', 'Tahoma', sans-serif;
+            direction: rtl;
+            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.5);
+            overflow: hidden;
+            min-height: 200px;
+            max-height: 85vh;
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            border: 2px solid #fbbf24;
+        }
+
+        #shareCard * {
+            font-family: 'Cairo', 'Segoe UI', 'Tahoma', sans-serif !important;
+        }
+
+        .card-header {
+            text-align: center;
+            margin-bottom: 10px;
+            flex-shrink: 0;
+        }
+
+        .card-header .main-icon {
+            font-size: 32px;
+            display: block;
+            margin-bottom: 2px;
+        }
+
+        .card-header h2 {
+            font-size: 20px;
+            color: #fbbf24;
+            letter-spacing: 0.5px;
+            font-weight: 900;
+            font-family: 'Cairo', sans-serif;
+        }
+
+        .card-header .subtitle {
+            font-size: 12px;
+            opacity: 0.7;
+            margin-top: 2px;
+            font-family: 'Cairo', sans-serif;
+        }
+
+        .card-divider {
+            border: none;
+            height: 2px;
+            background: #fbbf24;
+            margin: 6px 0 10px 0;
+            opacity: 0.3;
+            flex-shrink: 0;
+        }
+
+        .card-stats {
+            display: flex;
+            justify-content: center;
+            background: rgba(255, 255, 255, 0.06);
+            border-radius: 10px;
+            padding: 6px 10px;
+            margin-bottom: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            flex-shrink: 0;
+            flex-wrap: wrap;
+            gap: 3px;
+        }
+
+        .card-stats .cs-item {
+            text-align: center;
+            padding: 0 12px;
+        }
+        .card-stats .cs-item span {
+            display: block;
+            font-size: 9px;
+            opacity: 0.6;
+            letter-spacing: 0.3px;
+            font-family: 'Cairo', sans-serif;
+        }
+        .card-stats .cs-item strong {
+            font-size: 16px;
+            color: #fbbf24;
+            display: block;
+            margin-top: 1px;
+            font-family: 'Cairo', sans-serif;
+        }
+
+        .card-table-wrap {
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 10px;
+            padding: 8px 6px;
+            border: 1px solid rgba(255, 255, 255, 0.03);
+            flex: 1;
+            overflow-y: auto;
+            min-height: 0;
+            max-height: 55vh;
+        }
+
+        .card-table-wrap table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+            color: white;
+            min-width: 0;
+            font-family: 'Cairo', sans-serif !important;
+        }
+
+        .card-table-wrap table * {
+            font-family: 'Cairo', sans-serif !important;
+        }
+
+        .card-table-wrap thead th {
+            background: rgba(251, 191, 36, 0.10);
+            padding: 5px 4px;
+            text-align: center;
+            font-weight: 700;
+            color: #fbbf24;
+            font-size: 11px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+            position: sticky;
+            top: 0;
+            z-index: 2;
+            font-family: 'Cairo', sans-serif;
+        }
+
+        .card-table-wrap tbody td {
+            padding: 4px 4px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+            font-size: 12px;
+            text-align: center;
+            font-family: 'Cairo', sans-serif;
+        }
+
+        .card-table-wrap tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        .card-table-wrap .rank-num {
+            display: inline-block;
+            background: rgba(251, 191, 36, 0.12);
+            color: #fbbf24;
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 22px;
+            font-size: 11px;
+            font-weight: 700;
+            font-family: 'Cairo', sans-serif;
+        }
+
+        .card-table-wrap .status-dot {
+            display: inline-block;
+            padding: 1px 12px;
+            border-radius: 10px;
+            font-size: 11px;
+            font-weight: 700;
+            font-family: 'Cairo', sans-serif;
+        }
+        .status-dot.read {
+            background: rgba(34, 197, 94, 0.20);
+            color: #4ade80;
+            border: 1px solid rgba(34, 197, 94, 0.15);
+        }
+        .status-dot.notread {
+            background: rgba(239, 68, 68, 0.20);
+            color: #f87171;
+            border: 1px solid rgba(239, 68, 68, 0.15);
+        }
+
+        .card-table-wrap .juz-badge {
+            display: inline-block;
+            padding: 1px 12px;
+            border-radius: 10px;
+            font-size: 12px;
+            font-weight: 700;
+            font-family: 'Cairo', sans-serif;
+        }
+        .juz-badge.read {
+            background: rgba(34, 197, 94, 0.15);
+            color: #4ade80;
+            border: 1px solid rgba(34, 197, 94, 0.12);
+        }
+        .juz-badge.pending {
+            background: rgba(251, 191, 36, 0.15);
+            color: #fbbf24;
+            border: 1px solid rgba(251, 191, 36, 0.12);
+        }
+
+        .card-footer {
+            text-align: center;
+            margin-top: 8px;
+            font-size: 11px;
+            opacity: 0.4;
+            letter-spacing: 0.3px;
+            flex-shrink: 0;
+            color: #fbbf24;
+            font-family: 'Cairo', sans-serif;
+        }
+
+        .card-footer .footer-icon {
+            color: #fbbf24;
+        }
+
+        /* ====== Toast محسّن ====== */
+        .toast-message {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: #1a1a1a;
+            color: white;
+            padding: 14px 24px;
+            border-radius: 15px;
+            font-weight: 600;
+            z-index: 9999;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            animation: slideIn 0.3s ease;
+            max-width: 400px;
+            direction: rtl;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border-right: 4px solid #22c55e;
+            transition: all 0.3s ease;
+            font-family: 'Cairo', sans-serif;
+        }
+
+        .toast-message .toast-close {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 18px;
+            cursor: pointer;
+            opacity: 0.7;
+            transition: opacity 0.2s ease;
+            padding: 0 5px;
+        }
+
+        .toast-message .toast-close:hover {
+            opacity: 1;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        /* ====== Overlay تحميل ====== */
+        #loadingOverlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            z-index: 9998;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #loadingOverlay.active {
+            display: flex;
+        }
+
+        .loading-box {
+            background: white;
+            padding: 40px;
+            border-radius: 25px;
+            text-align: center;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            font-family: 'Cairo', sans-serif;
+        }
+
+        body.dark-mode .loading-box {
+            background: #16213e;
+        }
+
+        .loading-box .spinner-big {
+            width: 50px;
+            height: 50px;
+            border: 4px solid #e9ecef;
+            border-top: 4px solid #1a4739;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        body.dark-mode .loading-box .spinner-big {
+            border-color: #2d3748;
+            border-top-color: #68d391;
+        }
+
+        .loading-box p {
+            color: #1a4739;
+            font-weight: 600;
+            font-size: 16px;
+            font-family: 'Cairo', sans-serif;
+        }
+
+        body.dark-mode .loading-box p {
+            color: #68d391;
+        }
+
+        /* ====== استعلامات الوسائط ====== */
+        @media (max-width: 768px) {
+            .app-container {
+                padding: 18px 14px;
+                border-radius: 20px;
+            }
+            .header h1 {
+                font-size: 20px;
+            }
+            .btn {
+                padding: 8px 14px;
+                font-size: 12px;
+            }
+            .controls {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .controls select,
+            .controls input {
+                width: 100%;
+            }
+            .stats-banner .stat-item strong {
+                font-size: 18px;
+            }
+            table {
+                font-size: 11px;
+                min-width: 800px;
+            }
+            thead th,
+            tbody td {
+                padding: 8px 6px;
+            }
+            .auth-status {
+                flex-direction: column;
+                text-align: center;
+            }
+            .login-form-inline {
+                flex-direction: column;
+                width: 100%;
+            }
+            .login-form-inline input {
+                width: 100%;
+            }
+            #shareCard {
+                padding: 14px 10px;
+                max-height: 95vh;
+            }
+            .card-header h2 {
+                font-size: 16px;
+            }
+            .card-stats .cs-item strong {
+                font-size: 14px;
+            }
+            .card-stats .cs-item {
+                padding: 0 6px;
+            }
+            .card-table-wrap table {
+                font-size: 11px;
+            }
+            .card-table-wrap thead th,
+            .card-table-wrap tbody td {
+                padding: 3px 3px;
+                font-size: 10px;
+            }
+            .card-table-wrap .rank-num {
+                width: 18px;
+                height: 18px;
+                line-height: 18px;
+                font-size: 10px;
+            }
+            .card-table-wrap .status-dot {
+                padding: 1px 8px;
+                font-size: 10px;
+            }
+            .card-table-wrap .juz-badge {
+                padding: 1px 8px;
+                font-size: 10px;
+            }
+            .card-table-wrap {
+                max-height: 40vh;
+            }
+            .share-image-modal {
+                max-width: 100%;
+            }
+            .notification-item {
+                flex-direction: column;
+                align-items: stretch;
+                text-align: center;
+            }
+            .notification-item .notif-actions {
+                justify-content: center;
+            }
+            .preview-wrapper .preview-header {
+                flex-direction: column;
+                align-items: stretch;
+                text-align: center;
+            }
+            .preview-wrapper .preview-stats {
+                gap: 8px;
+            }
+            .preview-wrapper .preview-stats .stat {
+                padding: 4px 12px;
+            }
+            .preview-wrapper .preview-stats .stat strong {
+                font-size: 14px;
+            }
+            .parts-list-cell {
+                max-width: 100px;
+                font-size: 10px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .header {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .header-actions {
+                justify-content: center;
+            }
+            .stats-banner {
+                flex-direction: column;
+                align-items: center;
+                gap: 8px;
+            }
+            .quick-filters {
+                justify-content: center;
+            }
+            table {
+                min-width: 650px;
+                font-size: 10px;
+            }
+            thead th,
+            tbody td {
+                padding: 6px 4px;
+            }
+            .parts-list-cell {
+                max-width: 70px;
+                font-size: 9px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ====== Overlay تحميل ====== -->
+    <div id="loadingOverlay">
+        <div class="loading-box">
+            <div class="spinner-big"></div>
+            <p>⏳ جاري التحميل...</p>
+        </div>
+    </div>
+
+    <div class="app-container" id="app">
+
+        <!-- HEADER -->
+        <div class="header">
+            <h1>📊 المستخدمين والأجزاء</h1>
+            <div class="header-actions">
+                <button class="btn btn-dark-mode" id="darkModeBtn">🌙 وضع ليلي</button>
+                <button class="btn btn-primary" id="loadDataBtn">🔄 تحميل</button>
+            </div>
+        </div>
+
+        <!-- AUTH STATUS -->
+        <div class="auth-status" id="authStatus">
+            <span>🔐 جاري التحقق...</span>
+            <span class="spinner"></span>
+        </div>
+
+        <!-- STATS BANNER -->
+        <div class="stats-banner" id="statsBanner">
+            <div class="stat-item"><span>👥 المستخدمين</span><strong id="totalUsers">0</strong></div>
+            <div class="stat-item"><span>📖 الأجزاء الكلية</span><strong id="totalParts">0</strong></div>
+            <div class="stat-item"><span>📚 الأساسية</span><strong id="totalBaseParts">0</strong></div>
+            <div class="stat-item"><span>📦 الإضافية</span><strong id="totalExtraParts">0</strong></div>
+            <div class="stat-item"><span>🏆 الختمات</span><strong id="totalKhatmas">0</strong></div>
+            <div class="stat-item"><span>✅ قرأ اليوم</span><strong id="readTodayCount">0</strong></div>
+            <div class="stat-item"><span>⛔ لم يقرأ</span><strong id="notReadTodayCount">0</strong></div>
+            <div class="progress-container">
+                <div class="progress-label">
+                    <span>📊 نسبة القراءة اليوم</span>
+                    <span id="progressPercentage">0%</span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- QUICK FILTERS -->
+        <div class="quick-filters">
+            <button class="btn btn-outline active-filter" data-filter="all" id="filterAll">📋 الكل</button>
+            <button class="btn btn-success" data-filter="read" id="filterRead">✅ قرأ اليوم</button>
+            <button class="btn btn-danger" data-filter="notread" id="filterNotRead">⛔ لم يقرأ</button>
+        </div>
+
+        <!-- CONTROLS -->
+        <div class="controls">
+            <label for="circleFilter">🔍 الحلقة</label>
+            <select id="circleFilter"><option value="all">جميع الحلقات</option></select>
+
+            <label for="genderFilter">⚧️ النوع</label>
+            <select id="genderFilter">
+                <option value="all">الكل</option>
+                <option value="male">👨 رجال</option>
+                <option value="female">👩 نساء</option>
+                <option value="mixed">👥 مختلط</option>
+            </select>
+
+            <input type="text" id="searchInput" placeholder="🔍 بحث..." />
+            <span id="searchCounter" style="font-size: 13px; color: #6c757d;"></span>
+        </div>
+
+        <!-- SHARE BUTTONS -->
+        <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 18px;">
+            <button class="btn btn-whatsapp" id="shareWhatsappBtn">📱 واتساب (نص)</button>
+            <button class="btn btn-telegram" id="shareTelegramBtn">✈️ تليجرام (نص)</button>
+            <button class="btn btn-image" id="shareImageBtn">🖼️ مشاركة كصورة</button>
+            <button class="btn btn-warning" id="shareNotReadBtn">⚠️ المتأخرين</button>
+            <button class="btn btn-outline" id="copyTextBtn">📋 نسخ النص</button>
+            <button class="btn btn-outline" id="togglePreviewBtn">👁️ معاينة</button>
+            <button class="btn btn-excel" id="exportExcelBtn">📊 Excel</button>
+            <button class="btn btn-outline" id="exportCSVBtn">📄 CSV</button>
+        </div>
+
+        <!-- ====== PREVIEW ====== -->
+        <div class="preview-wrapper" id="previewWrapper">
+            <div class="preview-header">
+                <h2>📊 قائمة المستخدمين والأجزاء</h2>
+                <span class="preview-date" id="previewDate"></span>
+            </div>
+            <div id="previewTableContainer">
+                <!-- يتم تعبئته بواسطة JavaScript -->
+            </div>
+            <div class="preview-actions">
+                <button class="btn btn-image" id="previewExportImageBtn">🖼️ تصدير كصورة</button>
+                <button class="btn btn-excel" id="previewExportExcelBtn">📊 تصدير Excel</button>
+            </div>
+            <div class="preview-footer">📖 ختمتي — تطبيق الختمة الجماعية</div>
+        </div>
+
+        <!-- TABLE -->
+        <div class="table-wrapper" id="tableWrapper">
+            <table>
+                <thead>
+                    <tr>
+                        <th onclick="sortUsers('userName')" style="cursor: pointer;">#</th>
+                        <th onclick="sortUsers('userName')" style="cursor: pointer;">👤 المستخدم</th>
+                        <th onclick="sortUsers('userGender')" style="cursor: pointer;">⚧️ النوع</th>
+                        <th onclick="sortUsers('circleName')" style="cursor: pointer;">🔄 الحلقة</th>
+                        <th onclick="sortUsers('joinDate')" style="cursor: pointer;">📅 تاريخ الانضمام</th>
+                        <th onclick="sortUsers('displayJuz')" style="cursor: pointer;">📖 الجزء</th>
+                        <th onclick="sortUsers('basePartsRead')" style="cursor: pointer;">📊 الأساسي</th>
+                        <th onclick="sortUsers('extraPartsRead')" style="cursor: pointer;">📦 الإضافي</th>
+                        <th onclick="sortUsers('totalPartsRead')" style="cursor: pointer;">🏆 الختمات</th>
+                        <th onclick="sortUsers('readToday')" style="cursor: pointer;">📌 القراءة</th>
+                        <th onclick="sortUsers('isActive')" style="cursor: pointer;">📌 الحالة</th>
+                        <th>📅 آخر قراءة</th>
+                        <th>📋 الأجزاء</th>
+                    </tr>
+                </thead>
+                <tbody id="usersTableBody">
+                    <tr><td colspan="13" class="empty-state"><span class="icon">📡</span>جاري التحميل...</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- ====== قسم الإشعارات ====== -->
+        <div class="notifications-section">
+            <div class="section-header">
+                <h3>🔔 الإشعارات</h3>
+                <div style="display:flex;gap:8px;flex-wrap:wrap;">
+                    <button class="btn btn-sm btn-warning" id="deleteAllNotificationsBtn">🗑️ حذف الكل</button>
+                    <button class="btn btn-sm btn-success" id="markAllReadBtn">✅ تعيين الكل كمقروء</button>
+                </div>
+            </div>
+            <div class="notifications-list" id="notificationsList">
+                <div class="empty-state"><span class="icon">🔔</span>جاري تحميل الإشعارات...</div>
+            </div>
+        </div>
+
+        <div class="footer" style="text-align:center;margin-top:20px;color:#6c757d;font-family:'Cairo',sans-serif;">📖 ختمتي — قائمة المستخدمين والأجزاء المستلمة</div>
+    </div>
+
+    <!-- ====== نافذة عرض الصورة ====== -->
+    <div id="shareImageContainer">
+        <div class="share-image-modal">
+            <button class="close-btn" id="closeImageModal">✕</button>
+            <div id="shareCard"></div>
+            <div class="image-actions">
+                <button class="btn btn-whatsapp" id="shareImageWhatsapp">📱 واتساب</button>
+                <button class="btn btn-telegram" id="shareImageTelegram">✈️ تليجرام</button>
+                <button class="btn btn-primary" id="downloadImageBtn2" style="background:#f59e0b;color:white;">⬇️ تحميل</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ======================== Firebase ======================== -->
+    <script src="https://www.gstatic.com/firebasejs/11.0.2/firebase-app-compat.js">
+    </script>
+    <script src="https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore-compat.js">
+    </script>
+    <script src="https://www.gstatic.com/firebasejs/11.0.2/firebase-auth-compat.js">
+    </script>
+
+    <script>
+        // ======================== إعدادات Firebase ========================
+        const firebaseConfig = {
+            apiKey: "AIzaSyC_fQcf9PCrma1kGGq4BWh1JPfnP3zNrA0",
+            authDomain: "khitmah-da90b.firebaseapp.com",
+            projectId: "khitmah-da90b",
+            storageBucket: "khitmah-da90b.firebasestorage.app",
+            messagingSenderId: "515268042502",
+            appId: "1:515268042502:web:5e663036c34e9a5dbc4887"
+        };
+
+        if (typeof firebase !== 'undefined' && firebase.apps.length === 0) {
+            firebase.initializeApp(firebaseConfig);
+        }
+
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+
+        // ======================== المتغيرات ========================
+        let allUsers = [];
+        let allCircles = [];
+        let allNotifications = [];
+        let isAuthenticated = false;
+        let currentFilteredUsers = [];
+        let currentFilter = 'all';
+        let sortField = 'totalPartsRead';
+        let sortDirection = 'desc';
+        let notificationUnsubscribe = null;
+
+        // ======================== دوال مساعدة ========================
+        function calcKhatmas(total) { return Math.floor(total / 30); }
+
+        function getGenderLabel(g) {
+            const map = { 'female': '👩 نساء', 'male': '👨 رجال', 'mixed': '👥 مختلط' };
+            return map[g] || 'غير محدد';
+        }
+
+        function getGenderBadge(g) {
+            const map = { 'female': 'badge-female', 'male': 'badge-male', 'mixed': 'badge-mixed' };
+            return map[g] || 'badge-mixed';
+        }
+
+        function getStatusLabel(a) { return a ? '✅ نشط' : '⛔ غير نشط'; }
+
+        function getStatusBadge(a) { return a ? 'badge-active' : 'badge-inactive'; }
+
+        function escapeHtml(t) { if (!t) return ''; const d = document.createElement('div');
+            d.textContent = t; return d.innerHTML; }
+
+        // ✅ التحقق من قراءة اليوم
+        function hasReadToday(user) {
+            if (!user.lastReadDate) return false;
+            try {
+                const date = user.lastReadDate.toDate ? user.lastReadDate.toDate() : new Date(user.lastReadDate);
+                const today = new Date();
+                return date.getFullYear() === today.getFullYear() &&
+                       date.getMonth() === today.getMonth() &&
+                       date.getDate() === today.getDate();
+            } catch (e) {
+                return false;
+            }
+        }
+
+        // ✅ عرض الجزء الصحيح (الجزء المقروء وليس القادم)
+        function getDisplayJuz(user) {
+            if (user.readToday && user.currentJuz) {
+                let readJuz = user.currentJuz - 1;
+                if (readJuz === 0) readJuz = 30;
+                return readJuz;
+            }
+            return user.selectedJuz || 1;
+        }
+
+        function getJuzType(user) {
+            return user.readToday ? 'read' : 'pending';
+        }
+
+        // 🆕 تنسيق تاريخ الانضمام
+        function formatJoinDate(timestamp) {
+            if (!timestamp) return 'غير محدد';
+            try {
+                const date = timestamp.toDate ? timestamp.toDate() : new Date(timestamp);
+                return date.toLocaleDateString('ar', { year: 'numeric', month: 'short', day: 'numeric' });
+            } catch (e) { return 'غير محدد'; }
+        }
+
+        // 🆕 الحصول على أرقام الأجزاء كنص
+        function getPartsListText(partsList) {
+            if (!partsList || partsList.length === 0) return '—';
+            const sorted = [...partsList].sort((a, b) => a - b);
+            if (sorted.length > 15) {
+                return sorted.slice(0, 15).join('، ') + ' … +' + (sorted.length - 15);
+            }
+            return sorted.join('، ');
+        }
+
+        // 🆕 عدد الأجزاء المتبقية لإتمام ختمة
+        function getRemainingToKhatma(baseParts) {
+            const remainder = baseParts % 30;
+            return remainder === 0 ? 0 : 30 - remainder;
+        }
+
+        function formatDate(timestamp) {
+            if (!timestamp) return '';
+            try {
+                const date = timestamp.toDate ? timestamp.toDate() : new Date(timestamp);
+                return date.toLocaleDateString('ar', { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit',
+                    minute: '2-digit' });
+            } catch (e) { return ''; }
+        }
+
+        function formatDateShort(timestamp) {
+            if (!timestamp) return 'لم يقرأ بعد';
+            try {
+                const date = timestamp.toDate ? timestamp.toDate() : new Date(timestamp);
+                return date.toLocaleDateString('ar', { year: 'numeric', month: 'short', day: 'numeric' });
+            } catch (e) { return '—'; }
+        }
+
+        // ======================== Toast محسّن ========================
+        function showToast(msg, type = 'success') {
+            const colors = {
+                success: '#22c55e',
+                error: '#ef4444',
+                warning: '#f59e0b',
+                info: '#3b82f6'
+            };
+
+            let t = document.querySelector('.toast-message');
+            if (t) t.remove();
+
+            t = document.createElement('div');
+            t.className = 'toast-message';
+            t.style.borderRightColor = colors[type] || colors.success;
+
+            const textSpan = document.createElement('span');
+            textSpan.textContent = msg;
+            t.appendChild(textSpan);
+
+            const closeBtn = document.createElement('button');
+            closeBtn.className = 'toast-close';
+            closeBtn.textContent = '✕';
+            closeBtn.onclick = () => { t.style.opacity = '0';
+                t.style.transform = 'translateX(50px)';
+                setTimeout(() => t.remove(), 300); };
+            t.appendChild(closeBtn);
+
+            document.body.appendChild(t);
+
+            setTimeout(() => {
+                t.style.opacity = '0';
+                t.style.transform = 'translateX(50px)';
+                t.style.transition = 'all 0.3s ease';
+                setTimeout(() => t.remove(), 300);
+            }, 4000);
+        }
+
+        // ======================== تحميل البيانات ========================
+        function showLoading(show) {
+            const overlay = document.getElementById('loadingOverlay');
+            if (show) {
+                overlay.classList.add('active');
+            } else {
+                overlay.classList.remove('active');
+            }
+        }
+
+        async function loadAllData() {
+            try {
+                const [circlesSnap, membersSnap] = await Promise.all([
+                    db.collection('circles').get(),
+                    db.collection('circleMembers').get()
+                ]);
+
+                allCircles = [];
+                circlesSnap.forEach(d => {
+                    const data = d.data();
+                    allCircles.push({ id: d.id, name: data.circleName || 'بدون اسم', gender: data.gender || 'mixed' });
+                });
+
+                const filterSelect = document.getElementById('circleFilter');
+                filterSelect.innerHTML = '<option value="all">جميع الحلقات</option>';
+                allCircles.forEach(c => {
+                    const opt = document.createElement('option');
+                    opt.value = c.id;
+                    opt.textContent = `${c.name} (${c.gender === 'female' ? '👩' : c.gender === 'male' ? '👨' : '👥'})`;
+                    filterSelect.appendChild(opt);
+                });
+
+                allUsers = [];
+                membersSnap.forEach(d => {
+                    const data = d.data();
+                    
+                    // 🆕 استخراج الحقول الجديدة
+                    const joinDate = data.joinDate || data.createdAt || null;
+                    const basePartsRead = data.basePartsRead || data.totalPartsRead || 0;
+                    const extraPartsRead = data.extraPartsRead || data.totalExtraJuz || 0;
+                    const totalParts = basePartsRead + extraPartsRead;
+                    const readPartsList = data.readPartsList || [];
+                    const khatmasFromBase = Math.floor(basePartsRead / 30);
+                    
+                    allUsers.push({
+                        id: d.id,
+                        userName: data.userName || 'مجهول',
+                        userGender: data.userGender || 'mixed',
+                        circleId: data.circleId || '',
+                        joinDate: joinDate,
+                        selectedJuz: data.selectedJuz || 0,
+                        currentJuz: data.currentJuz || data.selectedJuz || 0,
+                        basePartsRead: basePartsRead,
+                        extraPartsRead: extraPartsRead,
+                        totalPartsRead: totalParts,
+                        totalExtraJuz: extraPartsRead,
+                        readPartsList: readPartsList,
+                        khatmasFromBase: khatmasFromBase,
+                        isActive: data.isActive !== false,
+                        lastReadDate: data.lastReadDate || null
+                    });
+                });
+
+                const circleMap = {};
+                allCircles.forEach(c => circleMap[c.id] = c.name);
+                
+                allUsers = allUsers.map(u => {
+                    const readToday = hasReadToday(u);
+                    let displayJuz = u.selectedJuz || 1;
+                    
+                    if (readToday && u.currentJuz) {
+                        displayJuz = u.currentJuz - 1;
+                        if (displayJuz === 0) displayJuz = 30;
+                    }
+                    
+                    return {
+                        ...u,
+                        circleName: circleMap[u.circleId] || 'حلقة غير معروفة',
+                        readToday: readToday,
+                        displayJuz: displayJuz,
+                        juzType: readToday ? 'read' : 'pending'
+                    };
+                });
+
+                sortUsers(sortField);
+
+            } catch (e) {
+                console.error('خطأ في تحميل البيانات:', e);
+                throw e;
+            }
+        }
+
+        async function loadData() {
+            if (!isAuthenticated) {
+                updateAuthStatus('error', '⚠️ سجل الدخول أولاً');
+                return;
+            }
+
+            showLoading(true);
+            const tbody = document.getElementById('usersTableBody');
+            tbody.innerHTML =
+            `<tr><td colspan="13" class="empty-state"><span class="icon">⏳</span>جاري التحميل...</td></tr>`;
+
+            try {
+                await loadAllData();
+                renderTable();
+                updateStats();
+                updatePreview();
+                showToast('✅ تم تحديث البيانات بنجاح', 'success');
+            } catch (e) {
+                console.error(e);
+                tbody.innerHTML =
+                    `<tr><td colspan="13" class="empty-state"><span class="icon">❌</span>${e.message}<br><br><button class="btn btn-primary" onclick="loadData()">🔄 إعادة</button></td></tr>`;
+                showToast('❌ خطأ في التحميل: ' + e.message, 'error');
+            } finally {
+                showLoading(false);
+            }
+        }
+
+        // ======================== تحميل الإشعارات (Realtime) ========================
+        function setupNotificationsListener() {
+            if (notificationUnsubscribe) {
+                notificationUnsubscribe();
+                notificationUnsubscribe = null;
+            }
+
+            notificationUnsubscribe = db.collection('notifications')
+                .orderBy('createdAt', 'desc')
+                .limit(100)
+                .onSnapshot((snapshot) => {
+                    allNotifications = [];
+                    snapshot.forEach(d => {
+                        const data = d.data();
+                        allNotifications.push({
+                            id: d.id,
+                            userId: data.userId || '',
+                            title: data.title || 'إشعار',
+                            message: data.message || '',
+                            type: data.type || 'general',
+                            read: data.read === true,
+                            createdAt: data.createdAt || null
+                        });
+                    });
+                    renderNotifications();
+                }, (error) => {
+                    console.error('خطأ في الاستماع للإشعارات:', error);
+                });
+        }
+
+        // ======================== عرض الإشعارات ========================
+        function renderNotifications() {
+            const container = document.getElementById('notificationsList');
+            if (allNotifications.length === 0) {
+                container.innerHTML = '<div class="empty-state"><span class="icon">🔔</span>لا توجد إشعارات</div>';
+                return;
+            }
+
+            let html = '';
+            allNotifications.forEach(notif => {
+                const dateStr = formatDate(notif.createdAt);
+                const readClass = notif.read ? '' : 'unread';
+
+                html += `
+                    <div class="notification-item ${readClass}" data-id="${notif.id}">
+                        <div class="notif-content">
+                            <div class="title">${escapeHtml(notif.title)}</div>
+                            <div class="message">${escapeHtml(notif.message)}</div>
+                            <div class="date">${dateStr}</div>
+                        </div>
+                        <div class="notif-actions">
+                            ${!notif.read ? `<button class="btn btn-sm btn-mark-read" onclick="markNotificationRead('${notif.id}')">📖 تعيين مقروء</button>` : ''}
+                            <button class="btn btn-sm btn-delete-notif" onclick="deleteNotification('${notif.id}')">🗑️ حذف</button>
+                        </div>
+                    </div>
+                `;
+            });
+
+            container.innerHTML = html;
+        }
+
+        // ======================== عمليات الإشعارات ========================
+        async function markNotificationRead(notifId) {
+            if (!isAuthenticated) { showToast('⚠️ سجل الدخول أولاً', 'error'); return; }
+            try {
+                await db.collection('notifications').doc(notifId).update({ read: true });
+                showToast('✅ تم تعيين الإشعار كمقروء', 'success');
+            } catch (e) {
+                console.error(e);
+                showToast('⚠️ حدث خطأ: ' + e.message, 'error');
+            }
+        }
+
+        async function deleteNotification(notifId) {
+            if (!isAuthenticated) { showToast('⚠️ سجل الدخول أولاً', 'error'); return; }
+            if (!confirm('⚠️ هل أنت متأكد من حذف هذا الإشعار؟')) return;
+            try {
+                await db.collection('notifications').doc(notifId).delete();
+                showToast('✅ تم حذف الإشعار', 'success');
+            } catch (e) {
+                console.error(e);
+                showToast('⚠️ حدث خطأ: ' + e.message, 'error');
+            }
+        }
+
+        async function deleteAllNotifications() {
+            if (!isAuthenticated) { showToast('⚠️ سجل الدخول أولاً', 'error'); return; }
+            if (!confirm('⚠️ هل أنت متأكد من حذف جميع الإشعارات؟')) return;
+            try {
+                const batch = db.batch();
+                allNotifications.forEach(n => {
+                    const ref = db.collection('notifications').doc(n.id);
+                    batch.delete(ref);
+                });
+                await batch.commit();
+                showToast('✅ تم حذف جميع الإشعارات', 'success');
+            } catch (e) {
+                console.error(e);
+                showToast('⚠️ حدث خطأ: ' + e.message, 'error');
+            }
+        }
+
+        async function markAllNotificationsRead() {
+            if (!isAuthenticated) { showToast('⚠️ سجل الدخول أولاً', 'error'); return; }
+            try {
+                const batch = db.batch();
+                allNotifications.forEach(n => {
+                    if (!n.read) {
+                        const ref = db.collection('notifications').doc(n.id);
+                        batch.update(ref, { read: true });
+                    }
+                });
+                await batch.commit();
+                showToast('✅ تم تعيين جميع الإشعارات كمقروءة', 'success');
+            } catch (e) {
+                console.error(e);
+                showToast('⚠️ حدث خطأ: ' + e.message, 'error');
+            }
+        }
+
+        // ======================== المصادقة ========================
+        function updateAuthStatus(status, msg) {
+            const el = document.getElementById('authStatus');
+            if (status === 'loading') {
+                el.className = 'auth-status';
+                el.innerHTML = `<span>⏳ ${msg || 'جاري...'}</span><span class="spinner"></span>`;
+            } else if (status === 'success') {
+                el.className = 'auth-status success';
+                el.innerHTML =
+                    `<span>✅ ${msg || 'تم الدخول'}</span><button class="btn btn-danger" onclick="logoutUser()" style="padding:5px 12px;font-size:12px;">🚪 خروج</button>`;
+                isAuthenticated = true;
+            } else {
+                el.className = 'auth-status error';
+                el.innerHTML = `
+                    <span>❌ ${msg || 'فشل الدخول'}</span>
+                    <div class="login-form-inline">
+                        <input type="email" id="loginEmail" placeholder="البريد" value="admin@khitmah.com">
+                        <input type="password" id="loginPassword" placeholder="كلمة السر" value="Admin@123456">
+                        <button class="btn btn-success" onclick="loginUser()">🔑 دخول</button>
+                    </div>
+                `;
+                isAuthenticated = false;
+            }
+        }
+
+        async function loginUser() {
+            const email = document.getElementById('loginEmail').value.trim();
+            const pass = document.getElementById('loginPassword').value.trim();
+            if (!email || !pass) { showToast('⚠️ أدخل البريد وكلمة السر', 'error'); return; }
+            updateAuthStatus('loading', 'جاري الدخول...');
+            try {
+                await auth.signInWithEmailAndPassword(email, pass);
+            } catch (e) {
+                let msg = 'فشل الدخول';
+                if (e.code === 'auth/user-not-found') msg = 'المستخدم غير موجود';
+                else if (e.code === 'auth/wrong-password') msg = 'كلمة السر غير صحيحة';
+                else if (e.code === 'auth/invalid-email') msg = 'بريد غير صحيح';
+                else if (e.code === 'auth/too-many-requests') msg = 'محاولات كثيرة، حاول لاحقاً';
+                updateAuthStatus('error', msg);
+                showToast('❌ ' + msg, 'error');
+            }
+        }
+
+        async function logoutUser() {
+            try {
+                await auth.signOut();
+                updateAuthStatus('loading', 'جاري الخروج...');
+                showToast('✅ تم الخروج', 'success');
+            } catch (e) { console.error(e); }
+        }
+
+        // ======================== فرز المستخدمين ========================
+        function sortUsers(field) {
+            if (sortField === field) {
+                sortDirection = sortDirection === 'desc' ? 'asc' : 'desc';
+            } else {
+                sortField = field;
+                sortDirection = 'desc';
+            }
+
+            allUsers.sort((a, b) => {
+                let valA = a[field] !== undefined ? a[field] : 0;
+                let valB = b[field] !== undefined ? b[field] : 0;
+                if (typeof valA === 'string') valA = valA.toLowerCase();
+                if (typeof valB === 'string') valB = valB.toLowerCase();
+                if (typeof valA === 'boolean') { valA = valA ? 1 : 0;
+                    valB = valB ? 1 : 0; }
+                if (valA instanceof Date || valB instanceof Date) {
+                    valA = new Date(valA).getTime();
+                    valB = new Date(valB).getTime();
+                }
+                if (sortDirection === 'desc') return valB > valA ? 1 : -1;
+                return valA > valB ? 1 : -1;
+            });
+
+            renderTable();
+            updatePreview();
+        }
+
+        // ======================== عرض الجدول ========================
+        function renderTable() {
+            const circleF = document.getElementById('circleFilter').value;
+            const genderF = document.getElementById('genderFilter').value;
+            const searchT = document.getElementById('searchInput').value.trim().toLowerCase();
+
+            let filtered = allUsers;
+
+            if (circleF !== 'all') filtered = filtered.filter(u => u.circleId === circleF);
+            if (genderF !== 'all') filtered = filtered.filter(u => u.userGender === genderF);
+            if (searchT) {
+                filtered = filtered.filter(u =>
+                    u.userName.toLowerCase().includes(searchT) ||
+                    u.circleName.toLowerCase().includes(searchT) ||
+                    u.userGender.includes(searchT) ||
+                    String(u.displayJuz).includes(searchT)
+                );
+            }
+
+            if (currentFilter === 'read') {
+                filtered = filtered.filter(u => u.readToday === true);
+            } else if (currentFilter === 'notread') {
+                filtered = filtered.filter(u => u.readToday === false);
+            }
+
+            currentFilteredUsers = filtered;
+
+            document.getElementById('searchCounter').textContent =
+                searchT ? `🔍 تم العثور على ${filtered.length} مستخدم` : '';
+
+            const tbody = document.getElementById('usersTableBody');
+            if (filtered.length === 0) {
+                tbody.innerHTML =
+                    `<tr><td colspan="13" class="empty-state"><span class="icon">🔍</span>لا يوجد مستخدمون</td></tr>`;
+                return;
+            }
+
+            let html = '';
+            filtered.forEach((u, i) => {
+                const total = u.totalPartsRead;
+                const khat = calcKhatmas(total);
+                const gBadge = getGenderBadge(u.userGender);
+                const sBadge = getStatusBadge(u.isActive);
+                const readBadge = u.readToday ? 'badge-read' : 'badge-notread';
+                const readText = u.readToday ? '✅ قرأ' : '⛔ لم يقرأ';
+                const juzBadgeClass = u.juzType === 'read' ? 'badge-juz-read' : 'badge-juz-pending';
+                const juzLabel = u.juzType === 'read' ? '✅' : '⏳';
+                const lastRead = formatDateShort(u.lastReadDate);
+                const joinDate = formatJoinDate(u.joinDate);
+                const partsList = getPartsListText(u.readPartsList);
+                const remaining = getRemainingToKhatma(u.basePartsRead);
+                const khatmaStatus = remaining === 0 ? '✅ مكتمل' : `⏳ متبقي ${remaining}`;
+                const khatmaBadge = remaining === 0 ? 'badge-khatma-complete' : 'badge-khatma-pending';
+
+                html += `
+                    <tr>
+                        <td><strong>${i + 1}</strong></td>
+                        <td><strong>${escapeHtml(u.userName)}</strong></td>
+                        <td><span class="badge ${gBadge}">${getGenderLabel(u.userGender)}</span></td>
+                        <td>${escapeHtml(u.circleName)}</td>
+                        <td style="font-size:11px;white-space:nowrap;">${joinDate}</td>
+                        <td><span class="badge ${juzBadgeClass}">${juzLabel} ${u.displayJuz}</span></td>
+                        <td><strong>${u.basePartsRead}</strong></td>
+                        <td>${u.extraPartsRead}</td>
+                        <td><span class="badge ${khatmaBadge}">${khat} ${khatmaStatus}</span></td>
+                        <td><span class="badge ${readBadge}">${readText}</span></td>
+                        <td><span class="badge ${sBadge}">${getStatusLabel(u.isActive)}</span></td>
+                        <td style="font-size: 11px; white-space:nowrap;">${lastRead}</td>
+                        <td class="parts-list-cell">${partsList}</td>
+                    </tr>
+                `;
+            });
+            tbody.innerHTML = html;
+        }
+
+        function updateStats() {
+            let totalParts = 0,
+                totalKhat = 0;
+            let readCount = 0,
+                notReadCount = 0;
+            let totalBaseParts = 0,
+                totalExtraParts = 0;
+            let totalKhatmasFromBase = 0;
+
+            allUsers.forEach(u => {
+                totalParts += u.totalPartsRead;
+                totalKhat += calcKhatmas(u.totalPartsRead);
+                totalBaseParts += u.basePartsRead;
+                totalExtraParts += u.extraPartsRead;
+                totalKhatmasFromBase += u.khatmasFromBase;
+                if (u.readToday) readCount++;
+                else notReadCount++;
+            });
+
+            document.getElementById('totalUsers').textContent = allUsers.length;
+            document.getElementById('totalParts').textContent = totalParts;
+            document.getElementById('totalBaseParts').textContent = totalBaseParts;
+            document.getElementById('totalExtraParts').textContent = totalExtraParts;
+            document.getElementById('totalKhatmas').textContent = totalKhat;
+            document.getElementById('readTodayCount').textContent = readCount;
+            document.getElementById('notReadTodayCount').textContent = notReadCount;
+
+            const total = allUsers.length;
+            const percentage = total > 0 ? (readCount / total) * 100 : 0;
+            document.getElementById('progressFill').style.width = `${percentage}%`;
+            document.getElementById('progressPercentage').textContent = `${Math.round(percentage)}%`;
+        }
+
+        // ======================== تحديث المعاينة ========================
+        function updatePreview() {
+            const wrapper = document.getElementById('previewWrapper');
+            if (!wrapper.classList.contains('show')) return;
+
+            const container = document.getElementById('previewTableContainer');
+            const dateEl = document.getElementById('previewDate');
+
+            const data = currentFilteredUsers.length ? currentFilteredUsers : allUsers;
+
+            dateEl.textContent = new Date().toLocaleDateString('ar', { year: 'numeric', month: 'long', day: 'numeric' });
+
+            if (data.length === 0) {
+                container.innerHTML = `<div class="empty-state"><span class="icon">📭</span>لا توجد بيانات للعرض</div>`;
+                return;
+            }
+
+            let totalParts = 0,
+                totalKhat = 0,
+                readCount = 0,
+                notReadCount = 0;
+            let totalBase = 0,
+                totalExtra = 0;
+            data.forEach(u => {
+                totalParts += u.totalPartsRead;
+                totalKhat += calcKhatmas(u.totalPartsRead);
+                totalBase += u.basePartsRead;
+                totalExtra += u.extraPartsRead;
+                if (u.readToday) readCount++;
+                else notReadCount++;
+            });
+
+            let tableHtml = `
+                <table>
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>المستخدم</th>
+                            <th>النوع</th>
+                            <th>الحلقة</th>
+                            <th>تاريخ الانضمام</th>
+                            <th>الجزء</th>
+                            <th>الأساسي</th>
+                            <th>الإضافي</th>
+                            <th>الختمات</th>
+                            <th>القراءة</th>
+                            <th>الحالة</th>
+                            <th>آخر قراءة</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+
+            data.forEach((u, i) => {
+                const total = u.totalPartsRead;
+                const khat = calcKhatmas(total);
+                const genderLabel = getGenderLabel(u.userGender);
+                const readLabel = u.readToday ? '✅ قرأ' : '⛔ لم يقرأ';
+                const statusLabel = u.isActive ? '✅ نشط' : '⛔ غير نشط';
+                const juzLabel = u.juzType === 'read' ? '✅' : '⏳';
+                const lastRead = formatDateShort(u.lastReadDate);
+                const joinDate = formatJoinDate(u.joinDate);
+                const remaining = getRemainingToKhatma(u.basePartsRead);
+
+                tableHtml += `
+                    <tr>
+                        <td>${i + 1}</td>
+                        <td><strong>${escapeHtml(u.userName)}</strong></td>
+                        <td>${genderLabel}</td>
+                        <td>${escapeHtml(u.circleName)}</td>
+                        <td style="font-size:10px;">${joinDate}</td>
+                        <td>${juzLabel} ${u.displayJuz}</td>
+                        <td><strong>${u.basePartsRead}</strong></td>
+                        <td>${u.extraPartsRead}</td>
+                        <td>${khat} ${remaining > 0 ? `(متبقي ${remaining})` : '✅'}</td>
+                        <td>${readLabel}</td>
+                        <td>${statusLabel}</td>
+                        <td style="font-size:10px;">${lastRead}</td>
+                    </tr>
+                `;
+            });
+
+            tableHtml += `
+                    </tbody>
+                </table>
+                <div class="preview-stats">
+                    <div class="stat"><span>👥 المستخدمين</span><strong>${data.length}</strong></div>
+                    <div class="stat"><span>📖 الأجزاء الكلية</span><strong>${totalParts}</strong></div>
+                    <div class="stat"><span>📚 الأساسية</span><strong>${totalBase}</strong></div>
+                    <div class="stat"><span>📦 الإضافية</span><strong>${totalExtra}</strong></div>
+                    <div class="stat"><span>🏆 الختمات</span><strong>${totalKhat}</strong></div>
+                    <div class="stat"><span>✅ قرأ اليوم</span><strong>${readCount}</strong></div>
+                    <div class="stat"><span>⛔ لم يقرأ</span><strong>${notReadCount}</strong></div>
+                </div>
+            `;
+
+            container.innerHTML = tableHtml;
+        }
+
+        // ======================== توليد نص منظم للواتساب والتلغرام ========================
+        function generateFormattedText(filterType) {
+            let data = currentFilteredUsers.length ? currentFilteredUsers : allUsers;
+
+            if (filterType === 'notread') {
+                data = data.filter(u => u.readToday === false);
+            } else if (filterType === 'read') {
+                data = data.filter(u => u.readToday === true);
+            }
+
+            if (data.length === 0) {
+                if (filterType === 'notread') return '🎉 *مبارك! جميع المستخدمين قرأوا أجزاءهم اليوم!* 🌟';
+                return '📊 لا توجد بيانات لعرضها.';
+            }
+
+            const today = new Date().toLocaleDateString('ar', { year: 'numeric', month: '2-digit', day: '2-digit' });
+            const readCount = data.filter(u => u.readToday).length;
+            const notReadCount = data.filter(u => !u.readToday).length;
+            
+            let totalParts = 0, totalKhat = 0;
+            let totalBase = 0, totalExtra = 0;
+            data.forEach(u => { 
+                totalParts += u.totalPartsRead; 
+                totalKhat += calcKhatmas(u.totalPartsRead);
+                totalBase += u.basePartsRead;
+                totalExtra += u.extraPartsRead;
+            });
+
+            let title = '';
+            let emoji = '';
+            if (filterType === 'notread') {
+                title = '⚠️ تقرير المتأخرين - لم يقرأوا اليوم';
+                emoji = '🔴';
+            } else if (filterType === 'read') {
+                title = '✅ تقرير المتميزين - قرأوا اليوم';
+                emoji = '🟢';
+            } else {
+                title = '📊 تقرير الختمة اليومي';
+                emoji = '📖';
+            }
+
+            let result = '';
+            result += `┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓\n`;
+            result += `┃  ${emoji}  ${title}  ┃\n`;
+            result += `┣━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┫\n`;
+            result += `┃  📅 التاريخ: ${today}                                ┃\n`;
+            result += `┃  👥 إجمالي المستخدمين: ${data.length}                  ┃\n`;
+            result += `┃  📖 إجمالي الأجزاء: ${totalParts}                    ┃\n`;
+            result += `┃  📚 الأساسية: ${totalBase}  │  📦 الإضافية: ${totalExtra}  ┃\n`;
+            result += `┃  🏆 عدد الختمات: ${totalKhat}                        ┃\n`;
+            result += `┃  ✅ قرأ اليوم: ${readCount}  │  ⛔ لم يقرأ: ${notReadCount}  ┃\n`;
+            result += `┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛\n\n`;
+            
+            result += '```\n';
+            result += `┌────┬──────────────────────┬──────────┬──────────────┐\n`;
+            result += `│  # │      اسم المستخدم    │  الجزء   │  حالة القراءة │\n`;
+            result += `├────┼──────────────────────┼──────────┼──────────────┤\n`;
+            
+            data.forEach((u, i) => {
+                const num = String(i + 1).padStart(2, ' ');
+                const name = u.userName.length > 18 ? u.userName.substring(0, 16) + '…' : u.userName.padEnd(18, ' ');
+                const juz = String(u.displayJuz || '—').padStart(8, ' ');
+                const status = u.readToday ? '✅ قرأ' : '⛔ لم يقرأ';
+                result += `│ ${num} │ ${name} │ ${juz} │ ${status.padEnd(12, ' ')} │\n`;
+            });
+            
+            result += `└────┴──────────────────────┴──────────┴──────────────┘\n`;
+            result += '```\n\n';
+            
+            result += `┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓\n`;
+            result += `┃  ★  ختمتي — تطبيق الختمة الجماعية  ★  ┃\n`;
+            if (filterType === 'notread' && notReadCount > 0) {
+                result += `┃  🔔 تنبيه: ${notReadCount} مستخدم(ين) لم يقرأوا وردهم اليوم!  ┃\n`;
+            } else if (filterType === 'all' && notReadCount > 0) {
+                result += `┃  💪 حافظ على وردك اليومي وكن من المتميزين!  ┃\n`;
+            } else {
+                result += `┃  🌟继续保持  ┃\n`;
+            }
+            result += `┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┗\n`;
+
+            return result;
+        }
+
+        // ======================== تصدير CSV ========================
+        function exportSimpleCSV() {
+            const data = currentFilteredUsers.length ? currentFilteredUsers : allUsers;
+            
+            if (data.length === 0) {
+                showToast('⚠️ لا توجد بيانات للتصدير', 'error');
+                return;
+            }
+
+            let csvRows = [];
+            csvRows.push('الاسم,النوع,الحلقة,تاريخ الانضمام,الجزء,الأساسي,الإضافي,الختمات,حالة القراءة,الحالة,آخر قراءة');
+            
+            data.forEach(u => {
+                const row = [
+                    u.userName,
+                    getGenderLabel(u.userGender),
+                    u.circleName,
+                    formatJoinDate(u.joinDate),
+                    u.displayJuz,
+                    u.basePartsRead,
+                    u.extraPartsRead,
+                    calcKhatmas(u.totalPartsRead),
+                    u.readToday ? 'قرأ' : 'لم يقرأ',
+                    u.isActive ? 'نشط' : 'غير نشط',
+                    formatDateShort(u.lastReadDate)
+                ];
+                csvRows.push(row.join(','));
+            });
+
+            const csvString = csvRows.join('\n');
+            const blob = new Blob(['\uFEFF' + csvString], { 
+                type: 'text/csv;charset=utf-8;' 
+            });
+            
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = `تقرير_القراءة_${new Date().toISOString().split('T')[0]}.csv`;
+            link.click();
+            
+            showToast('✅ تم تصدير CSV بنجاح', 'success');
+        }
+
+        // ======================== تصدير Excel ========================
+        function exportToExcel() {
+            const data = currentFilteredUsers.length ? currentFilteredUsers : allUsers;
+
+            if (data.length === 0) {
+                showToast('⚠️ لا توجد بيانات للتصدير', 'error');
+                return;
+            }
+
+            const excelData = data.map((u, i) => ({
+                '#': i + 1,
+                'المستخدم': u.userName,
+                'النوع': u.userGender === 'female' ? 'نساء' : u.userGender === 'male' ? 'رجال' : 'مختلط',
+                'الحلقة': u.circleName,
+                'تاريخ الانضمام': formatJoinDate(u.joinDate),
+                'الجزء': u.displayJuz,
+                'الأساسي': u.basePartsRead,
+                'الإضافي': u.extraPartsRead,
+                'الإجمالي': u.totalPartsRead,
+                'الختمات': calcKhatmas(u.totalPartsRead),
+                'قراءة اليوم': u.readToday ? 'قرأ' : 'لم يقرأ',
+                'الحالة': u.isActive ? 'نشط' : 'غير نشط',
+                'آخر قراءة': formatDateShort(u.lastReadDate),
+                'الأجزاء المقروءة': getPartsListText(u.readPartsList)
+            }));
+
+            const wb = XLSX.utils.book_new();
+            const ws = XLSX.utils.json_to_sheet(excelData);
+
+            ws['!cols'] = [
+                { wch: 5 }, { wch: 18 }, { wch: 10 }, { wch: 15 },
+                { wch: 15 }, { wch: 10 }, { wch: 10 }, { wch: 10 },
+                { wch: 10 }, { wch: 10 }, { wch: 12 }, { wch: 12 },
+                { wch: 15 }, { wch: 30 }
+            ];
+
+            XLSX.utils.book_append_sheet(wb, ws, 'المستخدمين');
+            XLSX.writeFile(wb, `قائمة_المستخدمين_${new Date().toISOString().split('T')[0]}.xlsx`);
+            showToast('✅ تم تصدير الملف بنجاح', 'success');
+        }
+
+        // ======================== مشاركة النص ========================
+        function shareTextTo(platform, filterType) {
+            const text = generateFormattedText(filterType || 'all');
+            let finalText = text;
+            if (platform === 'telegram') {
+                finalText = text.replace(/```/g, '');
+            }
+            const encoded = encodeURIComponent(finalText);
+            let url = '';
+            if (platform === 'whatsapp') url = `https://wa.me/?text=${encoded}`;
+            else if (platform === 'telegram') url = `https://t.me/share/url?url=${encoded}&text=${finalText}`;
+            if (url) window.open(url, '_blank');
+        }
+
+        function copyText(filterType) {
+            const text = generateFormattedText(filterType || 'all');
+            navigator.clipboard.writeText(text)
+                .then(() => showToast('✅ تم نسخ النص!', 'success'))
+                .catch(() => {
+                    const ta = document.createElement('textarea');
+                    ta.value = text;
+                    document.body.appendChild(ta);
+                    ta.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(ta);
+                    showToast('✅ تم نسخ النص!', 'success');
+                });
+        }
+
+        // ======================== صورة ========================
+        function generateShareCardHTML(filterType) {
+            let data = currentFilteredUsers.length ? currentFilteredUsers : allUsers;
+
+            if (filterType === 'notread') {
+                data = data.filter(u => u.readToday === false);
+            } else if (filterType === 'read') {
+                data = data.filter(u => u.readToday === true);
+            }
+
+            if (data.length === 0) {
+                return `
+                    <div class="card-header">
+                        <span class="main-icon">🎉</span>
+                        <h2 style="color:#4ade80;">جميع المستخدمين قرأوا!</h2>
+                        <div class="subtitle">لا يوجد متأخرين اليوم</div>
+                    </div>
+                    <div style="text-align:center;padding:20px;font-size:30px;">🌟</div>
+                    <div class="card-footer">📖 ختمتي — تطبيق الختمة الجماعية</div>
+                `;
+            }
+
+            const totalUsers = data.length;
+            const readCount = data.filter(u => u.readToday).length;
+            const notReadCount = data.filter(u => !u.readToday).length;
+            let totalBase = 0,
+                totalExtra = 0;
+            data.forEach(u => {
+                totalBase += u.basePartsRead;
+                totalExtra += u.extraPartsRead;
+            });
+
+            const title = filterType === 'notread' ? '⚠️ المتأخرين' :
+                filterType === 'read' ? '✅ المتميزين' :
+                '📊 قائمة المستخدمين';
+
+            const titleColor = filterType === 'notread' ? '#f87171' : filterType === 'read' ? '#4ade80' : '#fbbf24';
+
+            let rows = '';
+            data.forEach((u, i) => {
+                const readIcon = u.readToday ? '✅ قرأ' : '⛔ لم يقرأ';
+                const readClass = u.readToday ? 'read' : 'notread';
+                const juzDisplay = u.displayJuz || '—';
+                const juzClass = u.juzType === 'read' ? 'read' : 'pending';
+                const juzLabel = u.juzType === 'read' ? '✅' : '⏳';
+                const baseParts = u.basePartsRead || 0;
+
+                rows += `
+                    <tr>
+                        <td><span class="rank-num">${i+1}</span></td>
+                        <td style="text-align:right;font-weight:700;font-size:13px;">${escapeHtml(u.userName)}</td>
+                        <td><span class="juz-badge ${juzClass}">${juzLabel} ${juzDisplay}</span></td>
+                        <td style="font-size:11px;">${baseParts}</td>
+                        <td><span class="status-dot ${readClass}">${readIcon}</span></td>
+                    </tr>
+                `;
+            });
+
+            return `
+                <div class="card-header">
+                    <span class="main-icon">📖</span>
+                    <h2 style="color:${titleColor};">${title}</h2>
+                    <div class="subtitle">ختمتي — ${new Date().toLocaleDateString('ar')}</div>
+                </div>
+                <div class="card-stats">
+                    <div class="cs-item"><span>👥</span><strong>${totalUsers}</strong></div>
+                    <div class="cs-item"><span>📚 أساسي</span><strong>${totalBase}</strong></div>
+                    <div class="cs-item"><span>📦 إضافي</span><strong>${totalExtra}</strong></div>
+                    <div class="cs-item"><span>✅ قرأ</span><strong>${readCount}</strong></div>
+                    <div class="cs-item"><span>⛔ لم يقرأ</span><strong>${notReadCount}</strong></div>
+                </div>
+                <hr class="card-divider">
+                <div class="card-table-wrap">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th style="width:30px;">#</th>
+                                <th style="text-align:right;">المستخدم</th>
+                                <th>📖 الجزء</th>
+                                <th>📊 الأساسي</th>
+                                <th>📌 القراءة</th>
+                            </tr>
+                        </thead>
+                        <tbody>${rows}</tbody>
+                    </table>
+                </div>
+                <hr class="card-divider">
+                <div class="card-footer">
+                    <span class="footer-icon">★</span> ختمتي — تطبيق الختمة الجماعية <span class="footer-icon">★</span>
+                    ${filterType === 'notread' ? '<br>🔔 يرجى قراءة وردكم اليوم!' : ''}
+                </div>
+            `;
+        }
+
+        function showShareImage(filterType) {
+            const container = document.getElementById('shareImageContainer');
+            const card = document.getElementById('shareCard');
+            card.innerHTML = generateShareCardHTML(filterType || 'all');
+            container.classList.add('active');
+            setTimeout(() => { card.scrollTop = 0; }, 100);
+        }
+
+        function closeImageModal() {
+            document.getElementById('shareImageContainer').classList.remove('active');
+        }
+
+        async function captureImage() {
+            const card = document.getElementById('shareCard');
+            try {
+                await document.fonts.load('16px Cairo');
+                
+                const canvas = await html2canvas(card, {
+                    scale: 2,
+                    backgroundColor: '#0a1f18',
+                    allowTaint: true,
+                    useCORS: true,
+                    logging: false,
+                    width: 600,
+                    height: card.scrollHeight + 30,
+                    windowWidth: 600,
+                    windowHeight: card.scrollHeight + 50,
+                    letterRendering: true,
+                    foreignObjectRendering: false,
+                    onclone: function(document, element) {
+                        const clonedCard = document.getElementById('shareCard');
+                        if (clonedCard) {
+                            clonedCard.style.maxHeight = 'none';
+                            clonedCard.style.overflow = 'visible';
+                            clonedCard.style.padding = '20px 15px';
+                            clonedCard.style.direction = 'rtl';
+                            clonedCard.style.width = '600px';
+                            const allElements = clonedCard.querySelectorAll('*');
+                            allElements.forEach(el => {
+                                el.style.fontFamily = "'Cairo', 'Segoe UI', 'Tahoma', sans-serif !important";
+                                el.style.unicodeBidi = 'plaintext';
+                                el.style.direction = 'rtl';
+                            });
+                        }
+                    }
+                });
+                return canvas.toDataURL('image/png');
+            } catch (e) {
+                console.error('Error capturing image:', e);
+                throw e;
+            }
+        }
+
+        async function captureAndShare(platform) {
+            try {
+                const imgData = await captureImage();
+                if (platform === 'download') {
+                    const link = document.createElement('a');
+                    link.download = `قائمة_المستخدمين_ختمتي.png`;
+                    link.href = imgData;
+                    link.click();
+                    showToast('✅ تم تحميل الصورة', 'success');
+                    return;
+                }
+                if (navigator.share) {
+                    const blob = await (await fetch(imgData)).blob();
+                    const file = new File([blob], 'قائمة_المستخدمين.png', { type: 'image/png' });
+                    await navigator.share({ files: [file], title: 'قائمة المستخدمين - ختمتي' });
+                } else {
+                    const win = window.open();
+                    win.document.write(`
+                        <html dir="rtl">
+                        <head><title>قائمة المستخدمين - ختمتي</title>
+                        <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
+                        <style>
+                            body{display:flex;justify-content:center;align-items:center;min-height:100vh;background:#1a1a2e;margin:0;padding:20px;flex-direction:column;direction:rtl;font-family:'Cairo',sans-serif;}
+                            img{max-width:100%;height:auto;border-radius:15px;box-shadow:0 10px 40px rgba(0,0,0,0.5);}
+                            p{color:white;margin-top:20px;font-family:'Cairo',sans-serif;direction:rtl;}
+                        </style>
+                        </head>
+                        <body><img src="${imgData}" /><p>📱 اضغط مع الاستمرار لحفظ الصورة</p></body>
+                        </html>
+                    `);
+                }
+            } catch (e) {
+                console.error(e);
+                showToast('⚠️ حدث خطأ: ' + e.message, 'error');
+            }
+        }
+
+        // ======================== تصدير صورة المعاينة ========================
+        async function exportPreviewAsImage() {
+            const wrapper = document.getElementById('previewWrapper');
+            if (!wrapper.classList.contains('show')) {
+                showToast('⚠️ يرجى الضغط على زر "معاينة" أولاً', 'warning');
+                return;
+            }
+
+            try {
+                await document.fonts.load('16px Cairo');
+                const canvas = await html2canvas(wrapper, {
+                    scale: 2.5,
+                    backgroundColor: '#ffffff',
+                    allowTaint: true,
+                    useCORS: true,
+                    logging: false,
+                    letterRendering: true,
+                    foreignObjectRendering: false,
+                });
+                const link = document.createElement('a');
+                link.download = `قائمة_المستخدمين_ختمتي.png`;
+                link.href = canvas.toDataURL('image/png');
+                link.click();
+                showToast('✅ تم تصدير الصورة بنجاح', 'success');
+            } catch (e) {
+                console.error(e);
+                showToast('⚠️ حدث خطأ: ' + e.message, 'error');
+            }
+        }
+
+        // ======================== الوضع الليلي ========================
+        function toggleDarkMode() {
+            document.body.classList.toggle('dark-mode');
+            const btn = document.getElementById('darkModeBtn');
+            if (document.body.classList.contains('dark-mode')) {
+                btn.textContent = '☀️ وضع نهاري';
+                localStorage.setItem('darkMode', 'true');
+            } else {
+                btn.textContent = '🌙 وضع ليلي';
+                localStorage.setItem('darkMode', 'false');
+            }
+        }
+
+        // ======================== مراقبة المصادقة ========================
+        auth.onAuthStateChanged(async (user) => {
+            if (user) {
+                try {
+                    await user.getIdToken(true);
+                    updateAuthStatus('success', `✅ تم الدخول كـ ${user.email}`);
+                    setupNotificationsListener();
+                    await loadData();
+                } catch (e) {
+                    updateAuthStatus('error', 'انتهت الجلسة، سجل مرة أخرى');
+                }
+            } else {
+                try {
+                    updateAuthStatus('loading', 'دخول تلقائي...');
+                    await auth.signInWithEmailAndPassword('admin@khitmah.com', 'Admin@123456');
+                } catch (e) {
+                    updateAuthStatus('error', 'سجل الدخول لعرض البيانات');
+                }
+            }
+        });
+
+        // ======================== الأحداث ========================
+        document.addEventListener('DOMContentLoaded', function() {
+            if (localStorage.getItem('darkMode') === 'true') {
+                document.body.classList.add('dark-mode');
+                document.getElementById('darkModeBtn').textContent = '☀️ وضع نهاري';
+            }
+
+            document.getElementById('darkModeBtn').addEventListener('click', toggleDarkMode);
+            document.getElementById('loadDataBtn').addEventListener('click', loadData);
+
+            document.getElementById('filterAll').addEventListener('click', function() {
+                currentFilter = 'all';
+                document.querySelectorAll('.quick-filters .btn').forEach(b => b.classList.remove('active-filter'));
+                this.classList.add('active-filter');
+                renderTable();
+                updatePreview();
+            });
+
+            document.getElementById('filterRead').addEventListener('click', function() {
+                currentFilter = 'read';
+                document.querySelectorAll('.quick-filters .btn').forEach(b => b.classList.remove('active-filter'));
+                this.classList.add('active-filter');
+                renderTable();
+                updatePreview();
+            });
+
+            document.getElementById('filterNotRead').addEventListener('click', function() {
+                currentFilter = 'notread';
+                document.querySelectorAll('.quick-filters .btn').forEach(b => b.classList.remove('active-filter'));
+                this.classList.add('active-filter');
+                renderTable();
+                updatePreview();
+            });
+
+            document.getElementById('circleFilter').addEventListener('change', () => { renderTable();
+                updatePreview(); });
+            document.getElementById('genderFilter').addEventListener('change', () => { renderTable();
+                updatePreview(); });
+            document.getElementById('searchInput').addEventListener('input', () => { renderTable();
+                updatePreview(); });
+
+            document.getElementById('shareWhatsappBtn').addEventListener('click', () => shareTextTo('whatsapp',
+            currentFilter));
+            document.getElementById('shareTelegramBtn').addEventListener('click', () => shareTextTo('telegram',
+            currentFilter));
+
+            document.getElementById('shareNotReadBtn').addEventListener('click', () => {
+                const notReadData = (currentFilteredUsers.length ? currentFilteredUsers : allUsers).filter(u => u
+                    .readToday === false);
+                if (notReadData.length === 0) {
+                    showToast('🎉 مبارك! جميع المستخدمين قرأوا أجزاءهم اليوم!', 'success');
+                    return;
+                }
+                shareTextTo('whatsapp', 'notread');
+            });
+
+            document.getElementById('exportCSVBtn').addEventListener('click', exportSimpleCSV);
+
+            document.getElementById('shareImageBtn').addEventListener('click', () => showShareImage(currentFilter));
+            document.getElementById('closeImageModal').addEventListener('click', closeImageModal);
+            document.getElementById('shareImageWhatsapp').addEventListener('click', () => captureAndShare('share'));
+            document.getElementById('shareImageTelegram').addEventListener('click', () => captureAndShare('share'));
+            document.getElementById('downloadImageBtn2').addEventListener('click', () => captureAndShare('download'));
+            document.getElementById('copyTextBtn').addEventListener('click', () => copyText(currentFilter));
+
+            document.getElementById('togglePreviewBtn').addEventListener('click', function() {
+                const wrapper = document.getElementById('previewWrapper');
+                wrapper.classList.toggle('show');
+                if (wrapper.classList.contains('show')) {
+                    updatePreview();
+                    this.textContent = '👁️ إخفاء المعاينة';
+                } else {
+                    this.textContent = '👁️ معاينة';
+                }
+            });
+
+            document.getElementById('exportExcelBtn').addEventListener('click', exportToExcel);
+            document.getElementById('previewExportExcelBtn').addEventListener('click', exportToExcel);
+            document.getElementById('previewExportImageBtn').addEventListener('click', exportPreviewAsImage);
+
+            document.getElementById('deleteAllNotificationsBtn').addEventListener('click', deleteAllNotifications);
+            document.getElementById('markAllReadBtn').addEventListener('click', markAllNotificationsRead);
+
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    const email = document.getElementById('loginEmail');
+                    const pass = document.getElementById('loginPassword');
+                    if (email && pass && (document.activeElement === email || document.activeElement === pass)) {
+                        loginUser();
+                    }
+                }
+            });
+
+            document.getElementById('shareImageContainer').addEventListener('click', function(e) {
+                if (e.target === this) closeImageModal();
+            });
+        });
+
+        // تصدير الدوال للاستخدام في HTML
+        window.loginUser = loginUser;
+        window.logoutUser = logoutUser;
+        window.loadData = loadData;
+        window.markNotificationRead = markNotificationRead;
+        window.deleteNotification = deleteNotification;
+        window.deleteAllNotifications = deleteAllNotifications;
+        window.markAllNotificationsRead = markAllNotificationsRead;
+        window.exportToExcel = exportToExcel;
+        window.exportSimpleCSV = exportSimpleCSV;
+        window.exportPreviewAsImage = exportPreviewAsImage;
+        window.sortUsers = sortUsers;
+    </script>
+
+</body>
+</html>
